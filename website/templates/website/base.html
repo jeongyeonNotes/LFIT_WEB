@@ -1,0 +1,57 @@
+{% load static wagtailcore_tags %}
+<!doctype html><html lang="ko">
+
+<head>
+<link rel="stylesheet" href="{% static 'website/site.css' %}">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ page.title }} | LFIT</title>
+</head><body>
+<header class="topnav">
+  <div class="topnav__inner">
+    <!-- 좌측: 로고 -->
+    <a class="topnav__brand" href="/">
+      <!-- SVG 로고 or 이미지 -->
+      <img src="{% static 'website/logo.png' %}" alt="LFIT" height="28" />
+    </a>
+
+    <!-- 좌측: 1차 메뉴 -->
+    <nav class="topnav__left">
+      <a href="/future/">The Future</a>
+      <a href="/services/">Services</a>
+      <a href="/assets/">Assets</a>
+    </nav>
+
+    <!-- 우측: 2차 메뉴 + CTA + 아이콘 -->
+    <nav class="topnav__right">
+      <a href="/company/">기업정보</a>
+      <a href="/news/">뉴스룸</a>
+      <a href="/careers/">인재채용</a>
+      <a href="/contact/">문의하기</a>
+
+      <!-- 언어 아이콘 -->
+      <button class="icon-btn" aria-label="언어">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2Z"/>
+          <path d="M2 12h20M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20"/>
+        </svg>
+      </button>
+
+      <!-- 검색 아이콘 -->
+      <button class="icon-btn" aria-label="검색">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+        </svg>
+      </button>
+    </nav>
+
+    <!-- 모바일 햄버거 -->
+    <button class="hamburger" aria-label="메뉴" onclick="document.body.classList.toggle('nav-open')">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+
+<main>{% block content %}{% endblock %}</main>
+<footer>© 2025 LFIT</footer>
+</body></html>

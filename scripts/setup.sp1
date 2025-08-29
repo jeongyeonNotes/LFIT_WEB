@@ -1,0 +1,17 @@
+$ErrorActionPreference = "Stop"
+
+# 1) 가상환경 생성 및 활성화
+py -3 -m venv .venv
+. .\.venv\Scripts\Activate.ps1
+
+# 2) pip 업그레이드 & 의존성 설치
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+# 3) .env 파일이 없으면 샘플 복사
+if (-not (Test-Path ".env") -and (Test-Path ".env.example")) { Copy-Item ".env.example" ".env" }
+
+# 4) DB 마이그레이션
+python manage.py migrate
+
+Write-Host "`n✔ Setup finished. To run:  .\.venv\Scripts\Activate.ps1 ; python manage.py runserver"

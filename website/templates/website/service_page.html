@@ -1,0 +1,11 @@
+{% extends "website/base.html" %}{% load wagtailcore_tags %}
+{% block content %}
+<h1>{{ page.title }}</h1><p>{{ page.short_desc }}</p>
+{% for block in page.body %}
+  {% if block.block_type == "section" %}
+    <section>{% if block.value.heading %}<h2>{{ block.value.heading }}</h2>{% endif %}{{ block.value.body|richtext }}</section>
+  {% elif block.block_type == "faq" %}
+    <h2>FAQ</h2><ul>{% for qa in block.value %}<li><b>{{ qa.q }}</b><div>{{ qa.a|richtext }}</div></li>{% endfor %}</ul>
+  {% endif %}
+{% endfor %}
+{% endblock %}

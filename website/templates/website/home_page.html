@@ -1,0 +1,197 @@
+{% extends "website/base.html" %}
+{% load wagtailcore_tags %}
+{% block content %}
+
+{% comment %}
+
+{% endcomment %}
+
+<section class="hero-slider" id="home">
+  <div class="slides" aria-live="polite">
+    <article class="slide is-active"
+             style="--bg-img:url('https://images.unsplash.com/photo-1555617981-dac3880ecde5?q=80&w=1920&auto=format&fit=crop');">
+      <div class="overlay"></div>
+      <div class="caption">
+        <h1>Intelligent Factory Solution, iFacts</h1>
+        <p>미래의 Digital 기술로 제조 산업의 경쟁력을 높입니다.</p>
+        <p style="margin-top:16px"><a class="btn primary" href="#" style="border:1px solid rgba(255,255,255,.3); padding:10px 14px; border-radius:999px; color:#fff;">자세히 알아보기 ›</a></p>
+      </div>
+    </article>
+
+    <article class="slide"
+             style="--bg-img:url('https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1920&auto=format&fit=crop');">
+      <div class="overlay"></div>
+      <div class="caption">
+        <h1>Generative AI</h1>
+        <p>현장의 데이터를 이해하고, 더 빠른 의사결정을 돕습니다.</p>
+      </div>
+    </article>
+
+    <article class="slide"
+             style="--bg-img:url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1920&auto=format&fit=crop');">
+      <div class="overlay"></div>
+      <div class="caption">
+        <h1>Cloud Manufacturing</h1>
+        <p>확장 가능한 인프라로 운영 효율을 극대화합니다.</p>
+      </div>
+    </article>
+  </div>
+
+  <!-- 하단 탭 & 인덱스 & 일시정지 -->
+  <div class="slide-bottom">
+    <div class="slide-tabs" role="tablist" aria-label="슬라이드 카테고리">
+      <button class="is-active">01  LFIT </button>
+      <button>02  Generative AI</button>
+      <button>03  Cloud</button>
+    </div>
+    <div class="slide-meta">
+      <span class="slide-idx">01 / 03</span>
+      <button class="pause-btn" aria-label="일시정지" title="일시정지">Ⅱ</button>
+    </div>
+  </div>
+</section>
+<section class="cards">
+  <a class="card" href="/about/">
+    <div class="card-date">ABOUT</div>
+    <h3 class="card-title">회사소개</h3>
+    <p class="card-excerpt">우리는 이런 문제를 이렇게 해결합니다.</p>
+    <span class="card-more">View more <i>→</i></span>
+  </a>
+
+  <a class="card" href="/services/">
+    <div class="card-date">SERVICE</div>
+    <h3 class="card-title">서비스</h3>
+    <p class="card-excerpt">주요 3~5개 서비스를 한눈에.</p>
+    <span class="card-more">View more <i>→</i></span>
+  </a>
+
+  <a class="card" href="/cases/">
+    <div class="card-date">CASES</div>
+    <h3 class="card-title">성공사례</h3>
+    <p class="card-excerpt">최근 프로젝트/레퍼런스 모음.</p>
+    <span class="card-more">View more <i>→</i></span>
+  </a>
+
+  <a class="card" href="/news/">
+    <div class="card-date">NEWS</div>
+    <h3 class="card-title">뉴스/공지</h3>
+    <p class="card-excerpt">새 소식과 공지사항.</p>
+    <span class="card-more">View more <i>→</i></span>
+  </a>
+
+</section>
+
+<script>
+    (function ready(fn) {
+        if (document.readyState !== 'loading') fn();
+        else document.addEventListener('DOMContentLoaded', fn);
+    })(function () {
+
+        const root = document.querySelector('.hero-slider');
+        if (!root) {
+            console.warn('[slider] .hero-slider not found');
+            return;
+        }
+
+        const slides = [...root.querySelectorAll('.slide')];
+        if (!slides.length) {
+            console.warn('[slider] no .slide');
+            return;
+        }
+
+        const tabsWrap = root.querySelector('.slide-tabs');
+        let tabs = [...(tabsWrap?.querySelectorAll('button') || [])];
+        const idxEl = root.querySelector('.slide-idx');
+        const pauseBtn = root.querySelector('.pause-btn');
+
+        const N = slides.length;
+        const DURATION = 6000; // ms
+
+        // 탭이 부족/없으면 자동 생성 (슬라이드 data-tab 또는 h1 텍스트 사용)
+        if (tabsWrap && tabs.length < N) {
+            tabsWrap.innerHTML = '';
+            slides.forEach((s, k) => {
+                const title = s.dataset.tab || s.querySelector('h1')?.textContent?.trim() || `Slide ${k + 1}`;
+                const b = document.createElement('button');
+                b.textContent = `${String(k + 1).padStart(2, '0')}  ${title}`;
+                tabsWrap.appendChild(b);
+            });
+            tabs = [...tabsWrap.querySelectorAll('button')];
+        }
+
+        let i = 0, timer = null, paused = false;
+
+        function setActive(k) {
+            k = ((k % N) + N) % N; // wrap
+            slides.forEach((s, j) => s.classList.toggle('is-active', j === k));
+            if (tabs.length) tabs.forEach((b, j) => b.classList.toggle('is-active', j === k));
+            if (idxEl) idxEl.textContent = `${String(k + 1).padStart(2, '0')} / ${String(N).padStart(2, '0')}`;
+            i = k;
+        }
+
+        function start() {
+            stop();
+            if (!paused) timer = setInterval(() => setActive(i + 1), DURATION);
+        }
+
+        function stop() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        // 탭 클릭
+        tabs.forEach((b, j) => b.addEventListener('click', () => {
+            setActive(Math.min(j, N - 1));
+            start();
+        }));
+
+        // 일시정지/재생
+        if (pauseBtn) {
+            pauseBtn.addEventListener('click', () => {
+                paused = !paused;
+                if (paused) {
+                    stop();
+                    pauseBtn.textContent = '▶';
+                    pauseBtn.title = '재생';
+                } else {
+                    start();
+                    pauseBtn.textContent = 'Ⅱ';
+                    pauseBtn.title = '일시정지';
+                }
+            });
+        }
+
+        // 호버 일시정지(옵션)
+        root.addEventListener('mouseenter', () => {
+            if (!paused) stop();
+        });
+        root.addEventListener('mouseleave', () => {
+            if (!paused) start();
+        });
+
+        // 터치 스와이프
+        let sx = 0;
+        root.addEventListener('pointerdown', e => {
+            sx = e.clientX;
+            root.setPointerCapture?.(e.pointerId);
+        });
+        root.addEventListener('pointerup', e => {
+            const dx = e.clientX - sx;
+            if (Math.abs(dx) > 40) {
+                setActive(dx > 0 ? i - 1 : i + 1);
+                start();
+            }
+        });
+
+        // 시작
+        setActive(0);
+        start();
+    });
+</script>
+
+
+
+
+{% endblock %}
